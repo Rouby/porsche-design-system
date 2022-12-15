@@ -3,7 +3,7 @@ import { FONTS_MANIFEST } from '@porsche-design-system/fonts';
 import { CDN_BASE_PATH_FONTS } from '../../../../../cdn.config';
 
 export const generateFontLinksPartial = (): string => {
-  const fontSubsets = ['latin', 'greek', 'cyril'];
+  const fontSubsets = ['latin', 'greek', 'cyril', 'vietnamese'];
   const fontWeights = ['thin', 'regular', 'semi-bold', 'bold'];
 
   const types = `type FontSubset = ${fontSubsets.map((x) => `'${x}'`).join(' | ')};
@@ -60,6 +60,10 @@ export function getFontLinks(opts?: GetFontLinksOptions): string | string[] | JS
       regular: '${FONTS_MANIFEST.porscheNextWCyRegular.woff2}',
       'semi-bold': '${FONTS_MANIFEST.porscheNextWCySemiBold.woff2}',
       bold: '${FONTS_MANIFEST.porscheNextWCyBold.woff2}',
+    },
+    vietnamese: {
+      regular: '${FONTS_MANIFEST.porscheNextWVieRegular.woff2}',
+      bold: '${FONTS_MANIFEST.porscheNextWVieBold.woff2}',
     },
   };
 

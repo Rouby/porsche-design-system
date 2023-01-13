@@ -1,4 +1,3 @@
-import type { SocialIconName } from './link-social-utils';
 import type { BreakpointCustomizable, Theme } from '../../types';
 import { buildResponsiveStyles, getCss, isThemeDark } from '../../utils';
 import {
@@ -6,7 +5,6 @@ import {
   addImportantToRule,
   getFocusJssStyle,
   getTransition,
-  pxToRemWithUnit,
   getThemedColors,
 } from '../../styles';
 import { textSmallStyle } from '@porsche-design-system/utilities-v2';
@@ -17,34 +15,33 @@ import {
   getSlottedLinkJssStyle,
 } from '../../styles/link-button-styles';
 import { hoverMediaQuery } from '../../styles/hover-media-query';
+import { borderRadiusSmall, borderWidthBase } from '@porsche-design-system/utilities-v2';
 
-const { contrastHighColor: themeLightContrastHighColor, primaryColor: themeLightBaseColor } = getThemedColors('light');
-const { primaryColor: themeDarkBaseColor } = getThemedColors('dark');
+const {
+  primaryColor: themeLightPrimaryColor,
+  hoverColor: themeLightHoverColor,
+  focusColor: themeLightFocusColor,
+} = getThemedColors('light');
+const {
+  primaryColor: themeDarkPrimaryColor,
+  hoverColor: themeDarkHoverColor,
+  focusColor: themeDarkFocusColor,
+} = getThemedColors('dark');
 
 const getColors = (
-  icon: SocialIconName,
-  theme: Theme
-): { baseColor: string; baseColorHover: string; textColor: string; textColorHover: string } => {
-  const isDarkTheme = isThemeDark(theme);
-  const { primaryColor, primaryColorDarken, contrastHighColorDarken } = getThemedColors(theme);
-  const externalBrandColor = primaryColor;
-
+  isDarkTheme: boolean
+): { primaryColor: string; hoverColor: string; textColor: string; focusColor: string } => {
   return {
-    baseColor: isDarkTheme ? themeDarkBaseColor : themeLightContrastHighColor,
-    baseColorHover: externalBrandColor || (isDarkTheme ? primaryColorDarken : contrastHighColorDarken),
-    textColor: isDarkTheme ? themeLightBaseColor : themeDarkBaseColor,
-    textColorHover:
-      icon === 'logo-kakaotalk' ? themeLightBaseColor : externalBrandColor ? themeDarkBaseColor : undefined,
+    primaryColor: isDarkTheme ? themeDarkPrimaryColor : themeLightPrimaryColor,
+    hoverColor: isDarkTheme ? themeDarkHoverColor : themeLightHoverColor,
+    textColor: isDarkTheme ? themeLightPrimaryColor : themeDarkPrimaryColor,
+    focusColor: isDarkTheme ? themeDarkFocusColor : themeLightFocusColor,
   };
 };
 
-export const getComponentCss = (
-  icon: SocialIconName,
-  hideLabel: BreakpointCustomizable<boolean>,
-  hasHref: boolean,
-  theme: Theme
-): string => {
-  const { baseColor, baseColorHover, textColor, textColorHover } = getColors(icon, theme);
+export const getComponentCss = (hideLabel: BreakpointCustomizable<boolean>, hasHref: boolean, theme: Theme): string => {
+  const isDarkTheme = isThemeDark(theme);
+  const { primaryColor, hoverColor, textColor, focusColor } = getColors(isDarkTheme);
 
   return getCss({
     '@global': {
@@ -62,6 +59,7 @@ export const getComponentCss = (
             lineHeight: 'inherit',
             outline: 'transparent solid 1px',
             outlineOffset: '3px',
+            borderRadius: borderRadiusSmall,
             ...buildResponsiveStyles(hideLabel, getSlottedLinkJssStyle),
           },
           // TODO: combine link-social-styles with link-button-styles and tabs-bar-styles
@@ -69,11 +67,11 @@ export const getComponentCss = (
             border: 0,
           },
           '&(a:focus)': {
-            outlineColor: baseColor,
+            outline: `${borderWidthBase} solid ${focusColor}`,
           },
           ...hoverMediaQuery({
             '&(a:hover:focus)': {
-              outlineColor: baseColorHover,
+              outlineColor: hoverColor,
             },
           }),
           '&(a:focus:not(:focus-visible))': {
@@ -91,10 +89,10 @@ export const getComponentCss = (
     },
     root: {
       display: 'flex',
-      width: '100%',
-      minWidth: pxToRemWithUnit(48),
-      minHeight: pxToRemWithUnit(48),
       position: 'relative',
+      width: '100%',
+      minWidth: '48px',
+      minHeight: '48px',
       margin: 0,
       padding: 0,
       boxSizing: 'border-box',
@@ -103,17 +101,20 @@ export const getComponentCss = (
       cursor: 'pointer',
       textDecoration: 'none',
       textAlign: 'left',
-      border: '1px solid currentColor',
-      backgroundColor: 'currentColor',
-      color: baseColor,
-      transition:
-        getTransition('background-color') + ',' + getTransition('border-color') + ',' + getTransition('color'),
+      alignItems: 'center',
+      border: '1px solid transparent',
+      borderRadius: borderRadiusSmall,
+      backgroundColor: primaryColor,
+      color: primaryColor,
+      transition: getTransition('background-color') + ',' + getTransition('color'),
       ...hoverMediaQuery({
         '&:hover, &:active': {
-          color: baseColorHover,
-          '& span, & $icon': {
-            color: textColorHover,
-          },
+          backgroundColor: hoverColor,
+          ...(isDarkTheme && {
+            '& span, & $icon': {
+              color: themeDarkPrimaryColor,
+            },
+          }),
         },
       }),
       ...(hasHref && {
@@ -123,8 +124,8 @@ export const getComponentCss = (
     },
     icon: {
       position: 'absolute',
-      width: pxToRemWithUnit(24),
-      height: pxToRemWithUnit(24),
+      width: '24px',
+      height: '24px',
       color: textColor,
       pointerEvents: 'none',
       ...buildResponsiveStyles(hideLabel, getIconJssStyle),

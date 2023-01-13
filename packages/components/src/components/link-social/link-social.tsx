@@ -55,7 +55,7 @@ export class LinkSocial {
 
   public render(): JSX.Element {
     validateProps(this, propTypes);
-    attachComponentCss(this.host, getComponentCss, this.icon, this.hideLabel, !!this.href, this.theme);
+    attachComponentCss(this.host, getComponentCss, this.hideLabel, !!this.href, this.theme);
 
     const TagType = this.href === undefined ? 'span' : 'a';
     const PrefixedTagNames = getPrefixedTagNames(this.host);

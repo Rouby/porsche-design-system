@@ -57,12 +57,14 @@ export const getInsetJssStyle = (value: 'auto' | number = 0): JssStyle => {
 };
 
 export const getFocusJssStyle = (opts?: GetFocusStylesOptions): JssStyle => {
+  const { focusColor } = getThemedColors('light');
+
   const {
     pseudo,
     offset: outlineOffset,
     color: outlineColor,
   }: GetFocusStylesOptions = {
-    color: 'currentColor',
+    color: focusColor,
     offset: 2,
     ...opts,
   };
@@ -88,7 +90,7 @@ export const getFocusJssStyle = (opts?: GetFocusStylesOptions): JssStyle => {
         },
       }
     : {
-        outline: '1px solid transparent',
+        outline: '2px solid transparent',
         outlineOffset: `${outlineOffset}px`,
         '&::-moz-focus-inner': {
           border: 0,

@@ -2,11 +2,11 @@ import type { JssStyle } from 'jss';
 import type { SpinnerSize } from './spinner-utils';
 import type { BreakpointCustomizable, Theme } from '../../types';
 import { buildResponsiveStyles, getCss } from '../../utils';
-import { getScreenReaderOnlyJssStyle, getThemedColors, pxToRemWithUnit } from '../../styles';
+import { getScreenReaderOnlyJssStyle, getThemedColors } from '../../styles';
 
-const sizeSmall = pxToRemWithUnit(48);
-const sizeMedium = pxToRemWithUnit(72);
-const sizeLarge = pxToRemWithUnit(104);
+const sizeSmall = '48px';
+const sizeMedium = '72px';
+const sizeLarge = '104px';
 
 const sizeMap: Record<SpinnerSize, Pick<JssStyle, 'height' | 'width'>> = {
   small: { height: sizeSmall, width: sizeSmall },
